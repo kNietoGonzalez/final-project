@@ -17,7 +17,7 @@ public class UserRepositoryImpl {
 
     private final UserRepository userRepository;
 
-    public Integer createUser(UserDto userDto){
+    public Integer createUser(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -26,9 +26,9 @@ public class UserRepositoryImpl {
         return save.getId();
     }
 
-    public UserDto findById (Integer id){
+    public UserDto findById(Integer id) {
         Optional<User> saved = userRepository.findById(id);
-        if (saved.isPresent()){
+        if (saved.isPresent()) {
             User user = saved.get();
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
@@ -42,7 +42,7 @@ public class UserRepositoryImpl {
 
     }
 
-    public List <UserDto> findAll () {
+    public List<UserDto> findAll() {
         return userRepository.findAll()
                 .stream()
                 .map(user -> new UserDto(user.getId(), user.getName(), user.getEmail(),
@@ -54,18 +54,18 @@ public class UserRepositoryImpl {
         return recipes
                 .stream()
                 .map(recipe -> new RecipeDto(recipe.getId(), recipe.getName(),
-                recipe.getDescription(), recipe.getRating(), recipe.isFavourite(), recipe.getEstimation(),
-                recipe.getUserId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine() ))
+                        recipe.getDescription(), recipe.getRating(), recipe.getEstimation(),
+                        recipe.getUserId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine()))
                 .collect(Collectors.toList());
     }
 
-    public void delete (Integer id) {
+    public void delete(Integer id) {
         userRepository.deleteById(id);
     }
 
-    public UserDto update (UserDto userDto){
+    public UserDto update(UserDto userDto) {
         Optional<User> saved = userRepository.findById(userDto.getId());
-        if (saved.isPresent()){
+        if (saved.isPresent()) {
             User user = saved.get();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());

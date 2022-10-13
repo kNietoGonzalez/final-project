@@ -13,21 +13,15 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class RecipeDto {
 
-
     private int id;
-
 
     private String name;
 
-
     private String description;
-
 
     private double rating;
 
-
-    private boolean favourite;
-
+    //private boolean favourite;
 
     private String estimation;
 

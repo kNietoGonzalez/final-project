@@ -25,8 +25,8 @@ public class Recipe {
     @Column
     private double rating;
 
-    @Column
-    private boolean favourite;
+   // @Column
+   // private boolean favourite;
 
     @Column
     private String estimation;
