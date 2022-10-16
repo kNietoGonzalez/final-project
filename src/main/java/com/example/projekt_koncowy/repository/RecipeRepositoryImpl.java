@@ -1,31 +1,52 @@
 package com.example.projekt_koncowy.repository;
 
 import com.example.projekt_koncowy.dto.RecipeDto;
+import com.example.projekt_koncowy.model.Ingredient;
 import com.example.projekt_koncowy.model.Recipe;
+import com.example.projekt_koncowy.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class RecipeRepositoryImpl {
 
-    private final RecipeRepository recipeRepository;
+    private final IRecipeRepository recipeRepository;
+
+    private final IUserRepository userRepository;
+
+    private final IIngredientRepository ingredientRepository;
 
     public Integer createRecipe(RecipeDto recipeDto) {
-        Recipe recipe = new Recipe();
-        recipe.setName(recipeDto.getName());
-        recipe.setDescription(recipeDto.getDescription());
-        recipe.setRating(recipeDto.getRating());
-        recipe.setEstimation(recipeDto.getEstimation());
-        recipe.setUserId(recipeDto.getUserId());
-        recipe.setTypeOfDish(recipeDto.getTypeOfDish());
-        recipe.setTypeOfCuisine(recipeDto.getTypeOfCuisine());
-        Recipe save = recipeRepository.save(recipe);
-        return save.getId();
+        Optional<User> user = userRepository.findById(recipeDto.getUserId());
+        if(user.isPresent()){
+            Recipe recipe = new Recipe();
+            recipe.setName(recipeDto.getName());
+            recipe.setDescription(recipeDto.getDescription());
+            recipe.setRating(recipeDto.getRating());
+            recipe.setEstimation(recipeDto.getEstimation());
+            recipe.setUser(user.get());
+            recipe.setTypeOfDish(recipeDto.getTypeOfDish());
+            recipe.setTypeOfCuisine(recipeDto.getTypeOfCuisine());
+            recipe.setIngredients(mapIngredients(recipeDto.getIngredients()));
+            Recipe save = recipeRepository.save(recipe);
+            return save.getId();
+        }
+        return null;
+    }
+
+    private Set<Ingredient> mapIngredients(Set<Integer> ingredientsList){
+        return ingredientsList
+                .stream()
+                .map(ingredient -> {
+                    Optional<Ingredient> optionalIngredient = ingredientRepository.findById(ingredient);
+                    return optionalIngredient.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public RecipeDto findById(Integer id) {
@@ -38,9 +59,10 @@ public class RecipeRepositoryImpl {
             recipeDto.setDescription(recipe.getDescription());
             recipeDto.setRating(recipe.getRating());
             recipeDto.setEstimation(recipe.getEstimation());
-            recipeDto.setUserId(recipe.getUserId());
+            recipeDto.setUserId(recipe.getUser().getId());
             recipeDto.setTypeOfDish(recipe.getTypeOfDish());
             recipeDto.setTypeOfCuisine(recipe.getTypeOfCuisine());
+            recipeDto.setIngredients(recipe.getIngredients().stream().map(Ingredient::getId).collect(Collectors.toSet()));
             return recipeDto;
         }
         return null;
@@ -51,7 +73,8 @@ public class RecipeRepositoryImpl {
                 .stream()
                 .map(recipe -> new RecipeDto(recipe.getId(), recipe.getName(),
                         recipe.getDescription(), recipe.getRating(), recipe.getEstimation(),
-                        recipe.getUserId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine()))
+                        recipe.getUser().getId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine(),
+                        recipe.getIngredients().stream().map(Ingredient::getId).collect(Collectors.toSet())))
                 .collect(Collectors.toList());
     }
 
@@ -68,11 +91,25 @@ public class RecipeRepositoryImpl {
             recipe.setDescription(recipeDto.getDescription());
             recipe.setRating(recipeDto.getRating());
             recipe.setEstimation(recipeDto.getEstimation());
-            recipe.setUserId(recipeDto.getUserId());
             recipe.setTypeOfDish(recipeDto.getTypeOfDish());
             recipe.setTypeOfCuisine(recipeDto.getTypeOfCuisine());
+            recipe.getIngredients().addAll(addIngredients(recipeDto.getIngredients()));
+            recipeRepository.save(recipe);
             return recipeDto;
         }
         return null;
+    }
+
+    private Set<Ingredient> addIngredients(Set<Integer> ingredients) {
+        if (CollectionUtils.isEmpty(ingredients)) {
+            return null;
+        }
+        return ingredients
+                .stream()
+                .map(ingredient -> {
+                    Optional<Ingredient> repositoryById = ingredientRepository.findById(ingredient);
+                    return repositoryById.orElse(null);
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }

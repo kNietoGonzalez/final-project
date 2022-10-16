@@ -31,22 +31,19 @@ public class Recipe {
     @Column
     private String estimation;
 
-    @Column
-    private int userId;
-
-    @Column
+    @Column(name = "type_of_dish")
     @Enumerated(value = EnumType.STRING)
     private TypeOfDish typeOfDish;
 
-    @Column
+    @Column(name = "type_of_cuisine")
     @Enumerated(value = EnumType.STRING)
     private TypeOfCuisine typeOfCuisine;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "recipe_ingredient",
             joinColumns = @JoinColumn (name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
