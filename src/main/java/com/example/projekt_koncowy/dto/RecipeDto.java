@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,4 +33,6 @@ public class RecipeDto {
     private TypeOfDish typeOfDish;
 
     private TypeOfCuisine typeOfCuisine;
+
+    private Set<Integer> ingredients;
 }

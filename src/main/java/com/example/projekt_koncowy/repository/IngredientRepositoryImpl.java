@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IngredientRepositoryImpl {
 
-    private final IngredientRepository ingredientRepository;
+    private final IIngredientRepository ingredientRepository;
 
     public Integer createIngredient(IngredientDto ingredientDto) {
         Ingredient ingredient = new Ingredient();

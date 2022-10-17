@@ -2,11 +2,13 @@ package com.example.projekt_koncowy.repository;
 
 import com.example.projekt_koncowy.dto.RecipeDto;
 import com.example.projekt_koncowy.dto.UserDto;
+import com.example.projekt_koncowy.model.Ingredient;
 import com.example.projekt_koncowy.model.Recipe;
 import com.example.projekt_koncowy.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserRepositoryImpl {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
     public Integer createUser(UserDto userDto) {
         User user = new User();
@@ -26,6 +28,7 @@ public class UserRepositoryImpl {
         return save.getId();
     }
 
+    @Transactional
     public UserDto findById(Integer id) {
         Optional<User> saved = userRepository.findById(id);
         if (saved.isPresent()) {
@@ -42,6 +45,7 @@ public class UserRepositoryImpl {
 
     }
 
+    @Transactional
     public List<UserDto> findAll() {
         return userRepository.findAll()
                 .stream()
@@ -55,7 +59,8 @@ public class UserRepositoryImpl {
                 .stream()
                 .map(recipe -> new RecipeDto(recipe.getId(), recipe.getName(),
                         recipe.getDescription(), recipe.getRating(), recipe.getEstimation(),
-                        recipe.getUserId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine()))
+                        recipe.getUser().getId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine(),
+                        recipe.getIngredients().stream().map(Ingredient::getId).collect(Collectors.toSet())))
                 .collect(Collectors.toList());
     }
 
@@ -63,6 +68,7 @@ public class UserRepositoryImpl {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     public UserDto update(UserDto userDto) {
         Optional<User> saved = userRepository.findById(userDto.getId());
         if (saved.isPresent()) {

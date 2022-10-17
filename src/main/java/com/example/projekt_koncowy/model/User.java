@@ -23,7 +23,7 @@ public class User {
     @Column
     private String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipeList;
 
 }
