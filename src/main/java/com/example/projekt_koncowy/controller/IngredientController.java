@@ -1,9 +1,11 @@
 package com.example.projekt_koncowy.controller;
 
 import com.example.projekt_koncowy.dto.IngredientDto;
-import com.example.projekt_koncowy.repository.IngredientRepositoryImpl;
+import com.example.projekt_koncowy.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,31 +15,32 @@ import java.util.List;
 public class IngredientController {
 
     @Autowired
-    private IngredientRepositoryImpl ingredientRepositoryImpl;
+    private IngredientService ingredientService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<IngredientDto> findAll() {
-        return ingredientRepositoryImpl.findAll();
+    public ResponseEntity<List<IngredientDto>> findAll() {
+        return new ResponseEntity<>(ingredientService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public IngredientDto findById(@PathVariable("id") Integer id) {
-        return ingredientRepositoryImpl.findById(id);
+    public ResponseEntity<IngredientDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(ingredientService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Integer createIngredient(@RequestBody IngredientDto ingredientDto) {
-        return ingredientRepositoryImpl.createIngredient(ingredientDto);
+    public ResponseEntity<Integer> createIngredient(@RequestBody IngredientDto ingredientDto) {
+        return new ResponseEntity<>(ingredientService.createIngredient(ingredientDto), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable("id") Integer id) {
-        ingredientRepositoryImpl.delete(id);
+    public ResponseEntity <Void>delete(@PathVariable("id") Integer id) {
+        ingredientService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public IngredientDto update(@PathVariable("id") Integer id, @RequestBody IngredientDto ingredientDto) {
+    public ResponseEntity<IngredientDto> update(@PathVariable("id") Integer id, @RequestBody IngredientDto ingredientDto) {
         ingredientDto.setId(id);
-        return ingredientRepositoryImpl.update(ingredientDto);
+        return new ResponseEntity<>(ingredientService.update(ingredientDto), HttpStatus.OK);
     }
 }

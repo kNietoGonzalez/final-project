@@ -1,60 +1,59 @@
 package com.example.projekt_koncowy.repository;
 
-import com.example.projekt_koncowy.dto.IngredientDto;
+
+import com.example.projekt_koncowy.exceptions.NotFoundException;
 import com.example.projekt_koncowy.model.Ingredient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class IngredientRepositoryImpl {
 
+    public static final String NOT_EXIST = "Ingredient %d not exist";
+
     private final IIngredientRepository ingredientRepository;
 
-    public Integer createIngredient(IngredientDto ingredientDto) {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setName(ingredientDto.getName());
-        ingredient.setQuantity(ingredientDto.getQuantity());
+    public Integer createIngredient(Ingredient ingredient) {
         Ingredient save = ingredientRepository.save(ingredient);
         return save.getId();
     }
 
-    public IngredientDto findById(Integer id) {
+    @Transactional
+    public Ingredient findById(Integer id) {
         Optional<Ingredient> saved = ingredientRepository.findById(id);
-        if (saved.isPresent()) {
-            Ingredient ingredient = saved.get();
-            IngredientDto ingredientDto = new IngredientDto();
-            ingredientDto.setName(ingredient.getName());
-            ingredientDto.setId(ingredient.getId());
-            ingredientDto.setQuantity(ingredient.getQuantity());
-            return ingredientDto;
-        }
-        return null;
+        return saved.orElseThrow(()-> new NotFoundException(String.format(NOT_EXIST, id)));
     }
 
-    public List<IngredientDto> findAll() {
-        return ingredientRepository.findAll()
-                .stream()
-                .map(ingredient -> new IngredientDto(ingredient.getId(), ingredient.getName(), ingredient.getQuantity()))
-                .collect(Collectors.toList());
-    }
-    public void delete (Integer id){
-        ingredientRepository.deleteById(id);
+    @Transactional
+    public List<Ingredient> findAll() {
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        if (CollectionUtils.isEmpty(ingredients)){
+            throw new NotFoundException("Ingredient not found");
+        }
+        return ingredients;
     }
 
-    public IngredientDto update (IngredientDto ingredientDto){
-        Optional<Ingredient> saved = ingredientRepository.findById(ingredientDto.getId());
-        if (saved.isPresent()) {
-            Ingredient ingredient = saved.get();
-            ingredient.setName(ingredientDto.getName());
-            ingredient.setQuantity(ingredientDto.getQuantity());
-            ingredientRepository.save(ingredient);
-            return ingredientDto;
+    public void delete(Integer id) {
+        try {
+            ingredientRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            String error = String.format(NOT_EXIST, id);
+            log.error(error);
+            throw new NotFoundException(error);
         }
-        return null;
+    }
+
+    @Transactional
+    public Ingredient update(Ingredient ingredient) {
+        return ingredientRepository.save(ingredient);
     }
 }
