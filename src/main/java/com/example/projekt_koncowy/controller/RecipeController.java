@@ -1,7 +1,6 @@
 package com.example.projekt_koncowy.controller;
 
 import com.example.projekt_koncowy.dto.RecipeDto;
-import com.example.projekt_koncowy.exceptions.UserNotFoundException;
 import com.example.projekt_koncowy.service.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,6 +10,7 @@ import com.example.projekt_koncowy.model.User;
 import com.example.projekt_koncowy.repository.*;
 import com.example.projekt_koncowy.validation.ICreateRequestValidation;
 import com.example.projekt_koncowy.validation.IUpdateRequestValidation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class RecipeService {
+public class RecipeService extends CommonService{
 
+    @Getter
     private final Validator validator;
     private final UserRepositoryImpl userRepository;
 
@@ -50,15 +52,7 @@ public class RecipeService {
         return recipeRepository.createRecipe(recipe);
     }
 
-    private <T> void validate(final RecipeDto req, final Class<T> clazz) {
-        if (req == null) {
-            throw new BadRequestException("Request", "Mandatory");
-        }
-        final Set<ConstraintViolation<RecipeDto>> violations = validator.validate(req, clazz);
-        if (violations != null && !violations.isEmpty()) {
-            throw new BadRequestException(violations);
-        }
-    }
+
 
     private Set<Ingredient> mapIngredients(Set<Integer> ingredientsList) {
         return ingredientsList
