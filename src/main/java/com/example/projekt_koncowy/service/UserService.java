@@ -2,27 +2,27 @@ package com.example.projekt_koncowy.service;
 
 import com.example.projekt_koncowy.dto.RecipeDto;
 import com.example.projekt_koncowy.dto.UserDto;
-import com.example.projekt_koncowy.exceptions.BadRequestException;
 import com.example.projekt_koncowy.model.Ingredient;
 import com.example.projekt_koncowy.model.Recipe;
 import com.example.projekt_koncowy.model.User;
 import com.example.projekt_koncowy.repository.UserRepositoryImpl;
 import com.example.projekt_koncowy.validation.ICreateRequestValidation;
 import com.example.projekt_koncowy.validation.IUpdateRequestValidation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService extends CommonService {
 
     private final UserRepositoryImpl userRepository;
+
+    @Getter
     private final Validator validator;
 
     public Integer createUser(UserDto userDto) {
@@ -32,16 +32,6 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         return userRepository.createUser(user);
-    }
-
-    private <T> void validate(final UserDto req, final Class<T> clazz) {
-        if (req == null) {
-            throw new BadRequestException("Request", "Mandatory");
-        }
-        final Set<ConstraintViolation<UserDto>> violations = validator.validate(req, clazz);
-        if (violations != null && !violations.isEmpty()) {
-            throw new BadRequestException(violations);
-        }
     }
 
     public UserDto findById(Integer id) {

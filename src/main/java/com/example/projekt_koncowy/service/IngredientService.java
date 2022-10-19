@@ -6,6 +6,7 @@ import com.example.projekt_koncowy.model.Ingredient;
 import com.example.projekt_koncowy.repository.IngredientRepositoryImpl;
 import com.example.projekt_koncowy.validation.ICreateRequestValidation;
 import com.example.projekt_koncowy.validation.IUpdateRequestValidation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,11 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class IngredientService {
+public class IngredientService extends CommonService {
 
     private final IngredientRepositoryImpl ingredientRepository;
 
+    @Getter
     private final Validator validator;
 
     public Integer createIngredient(IngredientDto ingredientDto) {
@@ -29,16 +31,6 @@ public class IngredientService {
         ingredient.setName(ingredientDto.getName());
         ingredient.setQuantity(ingredientDto.getQuantity());
         return ingredientRepository.createIngredient(ingredient);
-    }
-
-    private <T> void validate(final IngredientDto req, final Class<T> clazz) {
-        if (req == null) {
-            throw new BadRequestException("Request", "Mandatory");
-        }
-        final Set<ConstraintViolation<IngredientDto>> violations = validator.validate(req, clazz);
-        if (violations != null && !violations.isEmpty()) {
-            throw new BadRequestException(violations);
-        }
     }
 
     public IngredientDto findById(Integer id) {
@@ -53,7 +45,8 @@ public class IngredientService {
     public List<IngredientDto> findAll() {
         return ingredientRepository.findAll()
                 .stream()
-                .map(ingredient -> new IngredientDto(ingredient.getId(), ingredient.getName(), ingredient.getQuantity()))
+                .map(ingredient -> new IngredientDto(ingredient.getId(), ingredient.getName(),
+                        ingredient.getQuantity()))
                 .collect(Collectors.toList());
     }
 
