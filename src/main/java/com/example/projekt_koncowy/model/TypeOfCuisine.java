@@ -5,11 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Data
-public class Ingredient {
+public class TypeOfCuisine {
 
     @Id
     @Column
@@ -19,6 +21,7 @@ public class Ingredient {
     @Column
     private String name;
 
-    @Column
-    private String quantity;
+    @OneToMany(mappedBy = "typeOfCuisine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipeList;
+
 }

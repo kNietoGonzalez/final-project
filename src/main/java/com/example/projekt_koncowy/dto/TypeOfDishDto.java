@@ -12,17 +12,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientDto {
+public class TypeOfDishDto {
 
     @NotNull(groups = IUpdateRequestValidation.class)
-    @NotEmpty(groups = IUpdateRequestValidation.class)
     private int id;
 
     @NotNull(groups = {IUpdateRequestValidation.class, ICreateRequestValidation.class})
     @NotEmpty(groups = {IUpdateRequestValidation.class, ICreateRequestValidation.class})
     private String name;
-
-    @NotNull(groups = {IUpdateRequestValidation.class, ICreateRequestValidation.class})
-    @NotEmpty(groups = {IUpdateRequestValidation.class, ICreateRequestValidation.class})
-    private String quantity;
 }

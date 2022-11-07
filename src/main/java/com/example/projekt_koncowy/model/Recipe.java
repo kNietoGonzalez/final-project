@@ -1,7 +1,5 @@
 package com.example.projekt_koncowy.model;
 
-import com.example.projekt_koncowy.enums.TypeOfCuisine;
-import com.example.projekt_koncowy.enums.TypeOfDish;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,12 +29,12 @@ public class Recipe {
     @Column
     private String estimation;
 
-    @Column(name = "type_of_dish")
-    @Enumerated(value = EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "type_of_dish_id", nullable = false)
     private TypeOfDish typeOfDish;
 
-    @Column(name = "type_of_cuisine")
-    @Enumerated(value = EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "type_of_cuisine_id", nullable = false)
     private TypeOfCuisine typeOfCuisine;
 
     @ManyToOne(fetch = FetchType.LAZY)

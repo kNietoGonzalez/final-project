@@ -1,7 +1,6 @@
 package com.example.projekt_koncowy.service;
 
 import com.example.projekt_koncowy.dto.IngredientDto;
-import com.example.projekt_koncowy.exceptions.BadRequestException;
 import com.example.projekt_koncowy.model.Ingredient;
 import com.example.projekt_koncowy.repository.IngredientRepositoryImpl;
 import com.example.projekt_koncowy.validation.ICreateRequestValidation;
@@ -10,10 +9,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

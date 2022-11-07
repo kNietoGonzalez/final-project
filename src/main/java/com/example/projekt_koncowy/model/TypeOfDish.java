@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Data
-public class Ingredient {
 
+public class TypeOfDish {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +21,9 @@ public class Ingredient {
     @Column
     private String name;
 
-    @Column
-    private String quantity;
+    @OneToMany(mappedBy = "typeOfDish", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipeList;
+
+
+
 }

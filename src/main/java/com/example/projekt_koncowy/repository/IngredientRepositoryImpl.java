@@ -9,7 +9,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,13 +26,11 @@ public class IngredientRepositoryImpl {
         return save.getId();
     }
 
-    @Transactional
     public Ingredient findById(Integer id) {
         Optional<Ingredient> saved = ingredientRepository.findById(id);
         return saved.orElseThrow(()-> new NotFoundException(String.format(NOT_EXIST, id)));
     }
 
-    @Transactional
     public List<Ingredient> findAll() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
         if (CollectionUtils.isEmpty(ingredients)){
@@ -52,7 +49,6 @@ public class IngredientRepositoryImpl {
         }
     }
 
-    @Transactional
     public Ingredient update(Ingredient ingredient) {
         return ingredientRepository.save(ingredient);
     }

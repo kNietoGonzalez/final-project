@@ -50,7 +50,7 @@ public class UserService extends CommonService {
                 .stream()
                 .map(recipe -> new RecipeDto(recipe.getId(), recipe.getName(),
                         recipe.getDescription(), recipe.getRating(), recipe.getEstimation(),
-                        recipe.getUser().getId(), recipe.getTypeOfDish(), recipe.getTypeOfCuisine(),
+                        recipe.getUser().getId(), recipe.getTypeOfDish().getName(), recipe.getTypeOfCuisine().getName(),
                         recipe.getIngredients().stream().map(Ingredient::getId).collect(Collectors.toSet())))
                 .collect(Collectors.toList());
     }

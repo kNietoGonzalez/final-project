@@ -8,7 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +25,14 @@ public class UserRepositoryImpl {
         return save.getId();
     }
 
-    @Transactional
+
     public User findById(Integer id) {
         Optional<User> saved = userRepository.findById(id);
         return saved.orElseThrow(() -> new NotFoundException(String.format(NOT_EXIST, id)));
 
     }
 
-    @Transactional
+
     public List<User> findAll() {
         List<User> users = userRepository.findAll();
         if (CollectionUtils.isEmpty(users)){
@@ -51,7 +51,7 @@ public class UserRepositoryImpl {
         }
     }
 
-    @Transactional
+
     public User update(User user) {
       return userRepository.save(user);
     }
